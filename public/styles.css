@@ -175,16 +175,16 @@ button:hover {
     }
 
     #form {
-        padding: 8px;
+        padding: 10px;
     }
 
     #input {
         font-size: 0.9rem;
-        padding: 8px;
+        padding: 10px;
     }
 
     button {
-        padding: 8px 16px;
+        padding: 10px 20px;
         font-size: 0.9rem;
     }
 }
