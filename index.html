@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Mchat</title>
     <link rel="icon" href="./logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="./styles.css"/>
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="js/javascript.js"></script>
 </head>
 
 <body>
     <div id="container">
         <div class="chatapp">
             <div class="menu-container">
-                <div class="menu-dots" id="menuDots"><img src="./menu.svg"/></div>
+                <div class="menu-dots" id="menuDots"><img src="./menu.svg" /></div>
                 <div class="dropdown" id="dropdownMenu">
                     <a href="#" id="clearAll">Clear All</a>
                 </div>
@@ -26,148 +27,6 @@
         </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-
-            const socket = io();
-            const username = prompt('enter your name')
-            let now = new Date();
-
-            // time
-            let options = {
-                timeZone: 'Asia/Kolkata',
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            };
-            let timeInIndia = now.toLocaleTimeString('en-IN', options);
-            timeInIndia.className = 'subscript'
-
-        document.addEventListener('DOMContentLoaded', function () {
-
-            let interactionOccurred = false;
-            // notification
-            const notificationRecive = new Audio('/notificationRecive.mp3');
-            const notificationSend = new Audio('/notificationSend.wav');
-            const notificationDisconnect = new Audio('/Disconnect.wav');
-
-
-    function playSound(audio) {
-        if (interactionOccurred) {
-            audio.play().catch(error => {
-                console.log("Failed to play sound:", error);
-            });
-        }
-    }
-
-    // Mark interactionOccurred true after any user interaction
-    document.body.addEventListener('click', () => interactionOccurred = true);
-    document.body.addEventListener('keypress', () => interactionOccurred = true);
-              
-            const form = document.getElementById('form');
-            const input = document.getElementById('input');
-            const messangerBox = document.querySelector('.messangerBox')
-            let leftMessage = document.getElementById('left-message');
-            let rightMessage = document.getElementById('right-message');
-            if (username) {
-                socket.emit('username', username)
-                const leftMessage = document.createElement('div');
-                leftMessage.id = 'left-message';
-                const item = document.createElement('span')
-                item.textContent = `welcome to mchat :${username}`;
-                let sub = document.createElement('sub');
-                sub.textContent = `${timeInIndia}`
-                item.appendChild(sub)
-                leftMessage.appendChild(item)
-                messangerBox.appendChild(leftMessage)
-                messangerBox.scrollTop = messangerBox.scrollHeight;
-                playSound(notificationRecive);
-            }
-
-            socket.on('user-joined', (username) => {
-                const leftMessage = document.createElement('div');
-                leftMessage.id = 'left-message'
-                const item = document.createElement('span')
-                item.textContent = `user joined: ${username}`;
-                let sub = document.createElement('sub');
-                sub.textContent = `${timeInIndia}`
-                item.appendChild(sub)
-                leftMessage.appendChild(item);
-                messangerBox.appendChild(leftMessage)
-                messangerBox.scrollTop = messangerBox.scrollHeight;
-
-                playSound(notificationRecive);
-            })
-
-            socket.on('user-disconnect', (username) => {
-                const leftMessage = document.createElement('div');
-                leftMessage.id = 'left-message'
-                const item = document.createElement('span')
-                item.textContent = `user offline: ${username}`;
-                let sub = document.createElement('sub');
-                sub.textContent = `${timeInIndia}`
-                item.appendChild(sub)
-                leftMessage.appendChild(item);
-                messangerBox.appendChild(leftMessage)
-                messangerBox.scrollTop = messangerBox.scrollHeight;
-                playSound(notificationDisconnect)
-            })
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                if (input.value) {
-                    socket.emit('chat message', { message: input.value, username: username});
-                    input.value = '';
-                }
-            });
-
-            socket.on('right-side-message', (msg) => {
-                const rightMessage = document.createElement('div');
-                rightMessage.id = 'right-message'
-                let item = document.createElement('span')
-                item.innerHTML = `You: ${msg.message}`
-                let sub = document.createElement('sub');
-                sub.textContent = `${timeInIndia}`
-                item.appendChild(sub)
-                rightMessage.appendChild(item)
-                messangerBox.appendChild(rightMessage)
-                messangerBox.scrollTop = messangerBox.scrollHeight;
-                playSound(notificationSend)
-            });
-
-            socket.on('left-side-message', (msg) => {
-                const leftMessage = document.createElement('div');
-                leftMessage.id = 'left-message'
-                let item = document.createElement('span');
-                item.innerHTML = `${msg.username}: ${msg.message}`
-                let sub = document.createElement('sub');
-                sub.textContent = `${timeInIndia}`
-                item.appendChild(sub)
-                leftMessage.appendChild(item);
-                messangerBox.appendChild(leftMessage)
-                messangerBox.scrollTop = messangerBox.scrollHeight;
-                playSound(notificationRecive);
-            })
-
-            // clear all chat
-            const menuDots = document.getElementById('menuDots');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-
-            menuDots.addEventListener('click', () => {
-                dropdownMenu.classList.toggle('show');
-            });
-            document.addEventListener('click', (event) => {
-                if (!menuDots.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                    dropdownMenu.classList.remove('show');
-                }
-            });
-            document.getElementById('clearAll').addEventListener('click', () => {
-                messangerBox.textContent = ''
-                dropdownMenu.classList.remove('show');
-            });
-
-        })
-
-    </script>
 </body>
 
 </html>
