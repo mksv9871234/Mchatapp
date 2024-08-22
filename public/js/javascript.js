@@ -305,6 +305,7 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (input.value) {
+            document.getElementById('input').focus();
             socket.emit('chat message', { message: input.value, username: username });
             input.value = '';
         }
